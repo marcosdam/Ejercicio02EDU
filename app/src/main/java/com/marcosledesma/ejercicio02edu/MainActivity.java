@@ -6,9 +6,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -54,54 +56,7 @@ public class MainActivity extends AppCompatActivity {
             if (data != null){
                 final Nota nota = data.getExtras().getParcelable("NOTA");
                 listaNotas.add(nota);
-                final int posicion = listaNotas.size()-1;
-                // TextView, Button, LinearLayout horizontal
-                TextView txtTitulo = new TextView(this);
-                txtTitulo.setText(nota.getTitulo());
-                txtTitulo.setTextColor(Color.BLUE);
-                txtTitulo.setTextSize(24);
-                txtTitulo.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // Para ir a la actividad VER_NOTA
-                        Bundle bundle = new Bundle();
-                        bundle.putInt("POS", posicion);
-                        bundle.putParcelable("NOTA", nota);
-                        Intent intent = new Intent(MainActivity.this, EditNotaActivity.class);
-                        intent.putExtras(bundle);
-                        startActivityForResult(intent, EDIT_NOTA);
-
-                    }
-                });
-                // Params Layout
-                LinearLayout.LayoutParams paramsTXT = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 3);
-                paramsTXT.setMargins(10, 10, 10, 10);
-                txtTitulo.setLayoutParams(paramsTXT);
-
-                // Button
-                Button btnEliminar = new Button(this);
-                btnEliminar.setText("ELIMINAR");
-                btnEliminar.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // Para eliminar
-                        listaNotas.remove(posicion);
-                        repintarNotas();
-                    }
-                });
-                // Params btn (peso 1)
-                LinearLayout.LayoutParams paramsBTN = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
-                paramsBTN.setMargins(10, 10, 10, 10);
-                btnEliminar.setLayoutParams(paramsBTN);
-
-                // Layout horizontal
-                LinearLayout contenedorNota = new LinearLayout(this);
-                contenedorNota.setOrientation(LinearLayout.HORIZONTAL);
-
-                // Agregar los elementos a la vista
-                contenedorNota.addView(txtTitulo);
-                contenedorNota.addView(btnEliminar);
-                contenedor.addView(contenedorNota);
+                repintarNotas();
             }
         }
 
@@ -121,11 +76,12 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < listaNotas.size(); i++) {
             final Nota nota = listaNotas.get(i);
             final int posicion = i;
+
+            View filaNota = LayoutInflater.from(this).inflate(R.layout.fila_nota, null);
+
             // TextView, Button, LinearLayout horizontal
-            TextView txtTitulo = new TextView(this);
+            TextView txtTitulo = filaNota.findViewById(R.id.txtTituloFilaNota);
             txtTitulo.setText(nota.getTitulo());
-            txtTitulo.setTextColor(Color.BLUE);
-            txtTitulo.setTextSize(24);
             txtTitulo.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -138,14 +94,8 @@ public class MainActivity extends AppCompatActivity {
                     startActivityForResult(intent, EDIT_NOTA);
                 }
             });
-            // Params Layout
-            LinearLayout.LayoutParams paramsTXT = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 3);
-            paramsTXT.setMargins(10, 10, 10, 10);
-            txtTitulo.setLayoutParams(paramsTXT);
-
             // Button
-            Button btnEliminar = new Button(this);
-            btnEliminar.setText("ELIMINAR");
+            ImageButton btnEliminar = filaNota.findViewById(R.id.btnEliminarFilaNota);
             btnEliminar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -154,19 +104,8 @@ public class MainActivity extends AppCompatActivity {
                     repintarNotas();
                 }
             });
-            // Params btn (peso 1)
-            LinearLayout.LayoutParams paramsBTN = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
-            paramsBTN.setMargins(10, 10, 10, 10);
-            btnEliminar.setLayoutParams(paramsBTN);
-
-            // Layout horizontal
-            LinearLayout contenedorNota = new LinearLayout(this);
-            contenedorNota.setOrientation(LinearLayout.HORIZONTAL);
-
             // Agregar los elementos a la vista
-            contenedorNota.addView(txtTitulo);
-            contenedorNota.addView(btnEliminar);
-            contenedor.addView(contenedorNota);
+            contenedor.addView(filaNota);
         }
     }
 }
